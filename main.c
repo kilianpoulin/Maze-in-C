@@ -1,0 +1,36 @@
+
+
+#include "include/SDL2/SDL.h"
+
+
+
+int main(int argc, char** argv)
+{
+
+    SDL_Event event;
+
+    int continuer = 1;
+
+    if(SDL_Init(SDL_INIT_EVERYTHING) == -1){
+        return 0;
+    }
+
+    SDL_Window* window = SDL_CreateWindow("SDL_Demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                          1280, 720, SDL_WINDOW_OPENGL);
+    if(window == NULL) {
+        return 0;
+    }
+
+    while(continuer)
+    {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT :
+                    continuer = 0;
+                    break;
+            }
+        }
+    }
+    SDL_Quit();
+    return 0;
+}
