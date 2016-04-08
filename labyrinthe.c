@@ -105,12 +105,14 @@ void init_labyrinthe(Labyrinthe *labyrinthe , SDL_Renderer *renderer)
 
 }
 
-/*But : génerer la case suivante*/
+/* But : génerer la case suivante */
 int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel, int *xSuiv, int *ySuiv, int nb)
 {
+    // Si les 4 directions ont été explorées, on arrête la fonction, il n'y a aucun déplacement valable.
     if(nb == 4)
         return 0;
 
+    // Direction NORD
    if ((labyrinthe->direction[nb] == NORD) && (yActuel - 1 >= 0)){
      if(labyrinthe->cellule[yActuel - 1][xActuel].contenu[VISITE] == 0){
            *xSuiv = xActuel;
@@ -118,7 +120,7 @@ int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel
            return 1;
        }
     }
-        //OUEST
+        // Direction OUEST
     else if ((labyrinthe->direction[nb] == OUEST) && (xActuel - 1 >= 0)){
         if(labyrinthe->cellule[yActuel][xActuel - 1].contenu[VISITE] == 0) {
         *xSuiv = xActuel - 1;
@@ -126,7 +128,7 @@ int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel
         return 1;
        }
    }
-        //SUD
+        // Direction SUD
     else if ((labyrinthe->direction[nb] == SUD) && (yActuel + 1 < 15)) {
        if ((labyrinthe->cellule[yActuel + 1][xActuel].contenu[VISITE] == 0)) {
            *xSuiv = xActuel;
@@ -134,7 +136,7 @@ int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel
            return 1;
        }
    }
-        //EST
+        // Direction EST
     else if ((labyrinthe->direction[nb] == EST) && (xActuel + 1 < 20)){
              if(labyrinthe->cellule[yActuel][xActuel + 1].contenu[VISITE] == 0){
         *xSuiv = xActuel + 1;
@@ -147,10 +149,11 @@ int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel
 }
 int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActuel, int *xSuiv, int *ySuiv, int nb)
 {
+    // Si les 4 directions ont été explorées, on arrête la fonction, il n'y a aucun déplacement valable.
     if(nb == 4)
         return 0;
 
-    //NORD
+    // Direction NORD
    if ((labyrinthe->direction[nb] == NORD) && (yActuel - 1 >= 0)) {
 
        if (labyrinthe->cellule[yActuel][xActuel].contenu[MUR_NORD] == 0){
@@ -163,7 +166,7 @@ int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActue
            }
        }
    }
-        //OUEST
+        // Direction OUEST
     else if ((labyrinthe->direction[nb] == OUEST) && (xActuel - 1 >= 0)){
 
         if(labyrinthe->cellule[yActuel][xActuel].contenu[MUR_OUEST] == 0)
@@ -177,7 +180,7 @@ int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActue
              }
         }
     }
-        //SUD
+        // Direction SUD
     else if ((labyrinthe->direction[nb] == SUD) && (yActuel + 1 < 15)) {
         if (labyrinthe->cellule[yActuel][xActuel].contenu[MUR_SUD] == 0)
         {
@@ -188,12 +191,12 @@ int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActue
             }
         }
     }
-        //EST
+
+       // Direction EST
     else if ((labyrinthe->direction[nb] == EST) && (xActuel + 1 < 20)){
 
         if (labyrinthe->cellule[yActuel][xActuel].contenu[MUR_EST] == 0)
         {
-
            if(labyrinthe->cellule[yActuel][xActuel + 1].contenu[VISITE] != 2){
                 *xSuiv = xActuel + 1;
                 *ySuiv = yActuel;
@@ -201,6 +204,7 @@ int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActue
             }
         }
     }
+    // On rappelle la fonction pour continuer à explorer les directions restantes
     return tirer_direction_backtracking(labyrinthe, xActuel, yActuel, xSuiv, ySuiv, nb + 1);
 }
 int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante) {
@@ -211,6 +215,8 @@ int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActue
     printf("\nSuiv->colonne : %d", *colonneSuivante);
     printf("\ncompteur : %d", labyrinthe->compteur);
     printf("\n\n\n");
+
+    // Si toutes les cases ont été visitées, le compteur vaut 0, la générération du labyrinthe est terminée
     if (labyrinthe->compteur == 0)
         return 0;
 
@@ -219,10 +225,11 @@ int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActue
     {
         labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[VISITE] = 1;
     }
-    /* on casse les murs */
-    if (*ligneSuivante - ligneActuel == -1) {// on va vers le nord
-        labyrinthe->cellule[ligneActuel][colonneActuel].contenu[MUR_NORD] = 0;
-        labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[MUR_SUD] = 0;
+
+    /* On casse les murs */
+    if (*ligneSuivante - ligneActuel == -1) { // on va vers le nord
+        labyrinthe->cellule[ligneActuel][colonneActuel].contenu[MUR_NORD] = 0; // mur de la case actuelle
+        labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[MUR_SUD] = 0; // mur de la case suivante
     }
     else if (*colonneSuivante - colonneActuel == -1) { // on va vers l'ouest
         labyrinthe->cellule[ligneActuel][colonneActuel].contenu[MUR_OUEST] = 0;
@@ -237,23 +244,30 @@ int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActue
         labyrinthe->cellule[ligneActuel][colonneActuel].contenu[MUR_SUD] = 0;
         labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[MUR_NORD] = 0;
     }
-    labyrinthe->xprec = colonneActuel;
-    labyrinthe->yprec = ligneActuel;
 
+
+    // la case suivante devient la case actuelle
     colonneActuel = *colonneSuivante;
     ligneActuel = *ligneSuivante;
 
-    melange(labyrinthe->direction , 4);/*On mélange le tableau pour tirer une direction*/
+    // on mélange les directions dans le tableau
+    melange(labyrinthe->direction , 4);
 
+    // On vérifie s'il y a un déplacement valable parmi les 4 directions possibles, si oui on casse des murs
     if(tirer_direction(labyrinthe , colonneActuel , ligneActuel ,colonneSuivante , ligneSuivante , 0) == 1)
         generer_labyrinthe(labyrinthe, colonneActuel, ligneActuel, colonneSuivante, ligneSuivante);
+
+        // Sinon on revient en arrière (backtracking)
     else {
+
+        // On indique si la case est visitée
         if(labyrinthe->cellule[ligneActuel][colonneActuel].contenu[VISITE] == 1) {
             labyrinthe->cellule[ligneActuel][colonneActuel].contenu[VISITE] = 2;
         }
+        // On diminue le nombre de cases restant à visiter
         labyrinthe->compteur--;
 
-        melange(labyrinthe->direction , 4);
+        // on appel la fonction backtracking, pour trouver une case précédemment empruntée
         if(tirer_direction_backtracking(labyrinthe , colonneActuel , ligneActuel , colonneSuivante , ligneSuivante , 0) == 1) {
             generer_labyrinthe(labyrinthe, colonneActuel, ligneActuel, colonneSuivante, ligneSuivante);
         }
