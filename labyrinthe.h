@@ -22,8 +22,6 @@ typedef struct Labyrinthe
     SDL_Texture *Mur[2];
     SDL_Rect posMur;
     int direction[4]; /*Pour tester les 4 directions lors de la génération*/
-    int xprec;
-    int yprec;/*Pour mémoriser les cordonnées (backtracking)*/
 } Labyrinthe;
 
 void afficher(Labyrinthe *labyrinthe , SDL_Renderer *renderer);
