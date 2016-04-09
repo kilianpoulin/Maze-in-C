@@ -33,10 +33,12 @@ SDL_Texture *load_texture(char path[100] , SDL_Renderer *renderer);
 
 int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante);
 
-
+void casse_mur(Labyrinthe *labyrinthe, int colonneAcuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante); // Fonction qui casse les murs
 int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel, int *xSuiv, int *ySuiv, int nb); // Fonction qui génère la case suivante
 int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActuel, int *xSuiv, int *ySuiv, int nb); //Fonction qui réalise le backtracking
 void melange(int *direction , int taille); // melange aléatoirement les directions dans un tableau
+
+/*void compte_a_rebours(); // compte à rebours --> affiche le temps restant avant la fin de la partie */
 
 enum{VISITE , MUR_NORD , MUR_SUD , MUR_EST , MUR_OUEST}; // Informations sur les cases
 enum{IMG_MUR_H , IMG_MUR_V};    // Images des murs (barre horizontale et barre verticale

@@ -105,6 +105,9 @@ void init_labyrinthe(Labyrinthe *labyrinthe , SDL_Renderer *renderer)
 
 }
 
+
+
+
 /* But : génerer la case suivante */
 int tirer_direction(Labyrinthe *labyrinthe, const int xActuel, const int yActuel, int *xSuiv, int *ySuiv, int nb)
 {
@@ -207,19 +210,8 @@ int tirer_direction_backtracking(Labyrinthe *labyrinthe, int xActuel, int yActue
     // On rappelle la fonction pour continuer à explorer les directions restantes
     return tirer_direction_backtracking(labyrinthe, xActuel, yActuel, xSuiv, ySuiv, nb + 1);
 }
-int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante) {
-
-   printf("Actu->ligne : %d", ligneActuel);
-    printf("\nActu->colonne : %d", colonneActuel);
-    printf("\nSuiv->ligne : %d", *ligneSuivante);
-    printf("\nSuiv->colonne : %d", *colonneSuivante);
-    printf("\ncompteur : %d", labyrinthe->compteur);
-    printf("\n\n\n");
-
-    // Si toutes les cases ont été visitées, le compteur vaut 0, la générération du labyrinthe est terminée
-    if (labyrinthe->compteur == 0)
-        return 0;
-
+void casse_mur(Labyrinthe *labyrinthe, int colonneActuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante)
+{
     /* On indique que la case est visitée */
     if(labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[VISITE] == 0)
     {
@@ -244,6 +236,22 @@ int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActue
         labyrinthe->cellule[ligneActuel][colonneActuel].contenu[MUR_SUD] = 0;
         labyrinthe->cellule[*ligneSuivante][*colonneSuivante].contenu[MUR_NORD] = 0;
     }
+}
+int generer_labyrinthe(Labyrinthe *labyrinthe, int colonneActuel, int ligneActuel, int *colonneSuivante, int *ligneSuivante) {
+
+   printf("Actu->ligne : %d", ligneActuel);
+    printf("\nActu->colonne : %d", colonneActuel);
+    printf("\nSuiv->ligne : %d", *ligneSuivante);
+    printf("\nSuiv->colonne : %d", *colonneSuivante);
+    printf("\ncompteur : %d", labyrinthe->compteur);
+    printf("\n\n\n");
+
+    // Si toutes les cases ont été visitées, le compteur vaut 0, la générération du labyrinthe est terminée
+    if (labyrinthe->compteur == 0)
+        return 0;
+
+    // On casse les murs
+    casse_mur(labyrinthe, colonneActuel, ligneActuel, colonneSuivante, ligneSuivante);
 
 
     // la case suivante devient la case actuelle
